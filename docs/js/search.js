@@ -1,11 +1,23 @@
 import { spotifyApiFetch, authorizeSpotify, getTokenFromUrl, saveToken, getToken } from './api/spotifyApi.js';
 
 const input = document.querySelector(".search-bar input");
-const dropdown = document.createElement("div");
-dropdown.classList.add("search-dropdown");
-input.parentNode.appendChild(dropdown);
 
-let debounceTimeout = null;
+if (input) {
+  const dropdown = document.createElement("div");
+  dropdown.classList.add("search-dropdown");
+  input.parentNode.appendChild(dropdown);
+
+  input.addEventListener("input", debounce(handleInput, 400));
+
+  document.addEventListener("click", (e) => {
+    if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+      clearDropdown();
+    }
+  });
+} else {
+  console.warn("Input .search-bar wasnn't found in DOM.");
+}
+
 
 function clearDropdown() {
   dropdown.innerHTML = "";
