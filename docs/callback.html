@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SongBanger | Callback</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <main>
+    <h1>Processing authentication...</h1>
+  </main>
+
+  <script type="module">
+
+    const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(hash);
+    const accessToken = params.get("access_token");
+
+    if (accessToken) {
+      localStorage.setItem("spotify_access_token", accessToken);
+      window.location.href = "/docs/index.html";
+    } else {
+      window.location.href = "/docs/index.html";
+    }
+  </script>
+</body>
+</html>
