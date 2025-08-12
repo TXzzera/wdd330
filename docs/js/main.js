@@ -16,6 +16,7 @@ if (path === '/' || path.endsWith('/index.html') || path.endsWith('/docs/') || p
 
 if (path.includes('/playlists')) {
   loadModule('./playlists.js');
+  console.log("Caminho atual (window.location.pathname):", window.location.pathname);
 }
 
 if (path.includes('/lyrics')) {
