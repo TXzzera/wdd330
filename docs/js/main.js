@@ -1,52 +1,53 @@
+// main.js
 const path = window.location.pathname.toLowerCase();
+console.log("main.js loaded!");
 
+// Function to load partials relative to the current file
 async function loadPartial(id, url) {
-  const response = await fetch(url);
-  if (response.ok) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Failed to load ${url}`);
     const html = await response.text();
     document.getElementById(id).innerHTML = html;
-  } else {
-    console.error(`Failed to load partial ${url}`);
+  } catch (err) {
+    console.error(err);
   }
 }
 
 async function init() {
-  // Load header, nav, footer
+  // ⚡ Use relative paths for GitHub Pages
   await loadPartial('header-base', './partials/header.html');
   await loadPartial('nav-base', './partials/nav.html');
   await loadPartial('footer-base', './partials/footer.html');
 
-  // Load search module
+  // Load JS modules only if needed
   try {
-    await import('./search.js');
-  } catch (e) {
-    console.error("Error loading search.js", e);
-  }
-
-  // Load homepage modules
-  if (path.includes('index.html') || path === '/' || path.endsWith('/docs/')) {
-    try {
+    // Homepage
+    if (path.includes('index.html') || path === '/' || path.endsWith('/docs/')) {
       const rankingModule = await import('./ranking.js');
       rankingModule.loadTopTwenty();
-    } catch (e) {
-      console.error("Error loading ranking.js", e);
     }
-  }
 
-  // Load other page modules
-  if (path.includes('/playlists')) {
-    await import('./playlist.js').catch(e => console.error(e));
-  }
+    // Playlists
+    if (path.includes('/playlists')) {
+      await import('./playlist.js');
+    }
 
- if (path.includes('/lyrics')) {
-  const lyricsModule = await import('./lyrics.js');
-  lyricsModule.initLyricsPage(); 
+    // Lyrics
+    if (path.includes('/lyrics')) {
+      const lyricsModule = await import('./lyrics.js');
+      lyricsModule.initLyricsPage();
+    }
+
+    // Account
+    if (path.includes('/account')) {
+      await import('./account.js');
+    }
+
+  } catch (e) {
+    console.error("Error loading module:", e);
+  }
 }
 
-
-  if (path.includes('/account')) {
-    await import('./account.js').catch(e => console.error(e));
-  }
-}
-
+// Wait for the DOM to be ready
 document.addEventListener('DOMContentLoaded', init);
