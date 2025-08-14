@@ -12,9 +12,9 @@ async function loadPartial(id, url) {
 
 async function init() {
   // Load header, nav, footer
-  await loadPartial('header-base', '/partials/header.html');
-  await loadPartial('nav-base', '/partials/nav.html');
-  await loadPartial('footer-base', '/partials/footer.html');
+  await loadPartial('header-base', './partials/header.html');
+  await loadPartial('nav-base', './partials/nav.html');
+  await loadPartial('footer-base', './partials/footer.html');
 
   // Load search module
   try {
