@@ -11,45 +11,41 @@ async function loadPartial(id, url) {
 
 async function initModules(path) {
   try {
-    // Homepage
     if (path.includes('index.html') || path === '/' || path.endsWith('/docs/')) {
       const rankingModule = await import('./ranking.js');
       rankingModule.loadTopTwenty();
     }
-
-    // Playlists
     if (path.includes('/playlists')) {
       await import('./playlist.js');
     }
-
-    // Lyrics
     if (path.includes('/lyrics')) {
       const lyricsModule = await import('./lyrics.js');
       lyricsModule.initLyricsPage();
     }
-
-    // Account
     if (path.includes('/account')) {
       await import('./account.js');
     }
-
   } catch (e) {
     console.error("Error loading module:", e);
   }
 }
 
 async function init() {
-  // Load partials first
-  await loadPartial('header-base', './partials/header.html');
-  await loadPartial('nav-base', './partials/nav.html');
-  await loadPartial('footer-base', './partials/footer.html');
+  // Compute base path depending on the page location
+  const pathParts = window.location.pathname.split('/');
+  const basePath = pathParts.length > 3 
+    ? '../'  // subfolder like /lyrics/, /account/, /playlists/
+    : './';   // root folder
 
-  // Define path after partials are in DOM
+  // Load partials with correct relative paths
+  await loadPartial('header-base', `${basePath}partials/header.html`);
+  await loadPartial('nav-base', `${basePath}partials/nav.html`);
+  await loadPartial('footer-base', `${basePath}partials/footer.html`);
+
+  // Path for modules
   const path = window.location.pathname.toLowerCase();
-
-  // Load JS modules
   await initModules(path);
 }
 
-// Wait for the DOM to be ready
+// Run after DOM is ready
 document.addEventListener('DOMContentLoaded', init);
