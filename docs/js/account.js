@@ -1,8 +1,3 @@
-// account.js
-/**
- * Handles login, signup, logout and displays account info
- * Data is stored in localStorage
- */
 const accountContainer = document.getElementById("account-container");
 
 // Utility functions
@@ -14,7 +9,7 @@ function saveProfile(profile) {
     localStorage.setItem("user_profile", JSON.stringify(profile));
 }
 
-// Render account details on My Account page
+// Render account details
 function renderAccount(profile) {
     if (!accountContainer) return;
 
@@ -29,12 +24,12 @@ function renderAccount(profile) {
 
     document.getElementById("logout-btn").addEventListener("click", () => {
         localStorage.removeItem("user_profile");
-        localStorage.removeItem("liked_playlists"); // clear user data
-        window.location.href = "/docs/index.html"; // redirect to homepage
+        localStorage.removeItem("liked_playlists"); // Clear user data
+        window.location.href = "/docs/index.html"; // Redirect to homepage
     });
 }
 
-// Handle login form
+// Login form
 const loginForm = document.getElementById("login-form");
 if (loginForm) {
     loginForm.addEventListener("submit", e => {
@@ -42,18 +37,17 @@ if (loginForm) {
         const username = document.getElementById("username").value.trim();
         const email = document.getElementById("email").value.trim();
 
-        let profile = getProfile();
+        const profile = getProfile();
         if (!profile || profile.username !== username || profile.email !== email) {
             alert("User not found. Please sign up.");
             return;
         }
 
-        // Login successful
-        window.location.href = "/docs/index.html"; // redirect to homepage
+        window.location.href = "/docs/index.html"; // Redirect to homepage
     });
 }
 
-// Handle signup form
+// Signup form
 const signupForm = document.getElementById("signup-form");
 if (signupForm) {
     signupForm.addEventListener("submit", e => {
@@ -67,7 +61,7 @@ if (signupForm) {
         };
         saveProfile(profile);
         alert("Account created successfully!");
-        window.location.href = "/docs/index.html"; // redirect to homepage
+        window.location.href = "/docs/index.html"; // Redirect to homepage
     });
 }
 
@@ -77,10 +71,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (accountContainer) {
         if (profile) {
-            // If user is logged in, show account details
             renderAccount(profile);
         } else {
-            // If no user logged in, show login/signup prompt
             accountContainer.innerHTML = `
                 <p>You are not logged in.</p>
                 <p>Please <a href="login.html">Login</a> or <a href="signup.html">Sign Up</a> to access your account.</p>

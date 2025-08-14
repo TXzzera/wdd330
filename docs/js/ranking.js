@@ -1,4 +1,4 @@
-import { getTopTracks } from './api/lastfmApi.js';
+import { getTopTracks } from './apis/lastfmApi.js';
 
 function createMusicCards(tracks, container) {
   container.innerHTML = "";
@@ -16,10 +16,8 @@ function createMusicCards(tracks, container) {
       <button class="listen-btn">Listen</button>
     `;
 
-    // Adiciona o evento ao botão
-    const button = musicCard.querySelector(".listen-btn");
-    button.addEventListener("click", () => {
-      // Redireciona para lyrics/index.html passando artista e música como query string
+    // Button click event
+    musicCard.querySelector(".listen-btn").addEventListener("click", () => {
       const url = `lyrics/index.html?artist=${encodeURIComponent(artistName)}&song=${encodeURIComponent(track.name)}`;
       window.location.href = url;
     });

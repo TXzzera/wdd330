@@ -1,5 +1,3 @@
-// playlist.js
-
 const LIKE_GRID = document.getElementById("like-grid");
 const LAST_GRID = document.getElementById("last-grid");
 const FEAT_GRID = document.getElementById("feat-grid");
@@ -52,27 +50,24 @@ function renderGrid(grid, playlists) {
  * Load all playlists for the current user
  */
 function loadPlaylists() {
-  const liked = getUserPlaylists("liked_playlists");
-  const last = getUserPlaylists("last_playlists");
-  const featured = getUserPlaylists("featured_playlists");
-
-  renderGrid(LIKE_GRID, liked);
-  renderGrid(LAST_GRID, last);
-  renderGrid(FEAT_GRID, featured);
+  renderGrid(LIKE_GRID, getUserPlaylists("liked_playlists"));
+  renderGrid(LAST_GRID, getUserPlaylists("last_playlists"));
+  renderGrid(FEAT_GRID, getUserPlaylists("featured_playlists"));
 }
 
 /**
  * Add a playlist to a specific type for the current user
- * @param {string} type - playlist type
- * @param {Object} playlist - playlist object {name, description}
+ * @param {string} type
+ * @param {Object} playlist
  */
-function addPlaylist(type, playlist) {
+export function addPlaylist(type, playlist) {
   const playlists = getUserPlaylists(type);
   playlists.push(playlist);
   saveUserPlaylists(type, playlists);
-  loadPlaylists(); // refresh display
+  loadPlaylists(); // Refresh display
 }
 
+// Init on DOM load
 document.addEventListener("DOMContentLoaded", () => {
   loadPlaylists();
 });

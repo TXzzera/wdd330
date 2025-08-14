@@ -10,14 +10,15 @@ export const YOUTUBE_API_KEY = "AIzaSyCOVwKaKjOY_DNhj7blxXrySfwwp8Bx_as";
  * @returns {Promise<object|null>} - Video object or null
  */
 export async function searchVideo(query) {
-  const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=${encodeURIComponent(query)}&key=${YOUTUBE_API_KEY}&type=video`;
-  try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error("Failed to fetch YouTube video");
-    const data = await res.json();
-    return data.items[0] || null;
-  } catch (err) {
-    console.error("YouTube API error:", err);
-    return null;
-  }
+    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=${encodeURIComponent(query)}&key=${YOUTUBE_API_KEY}&type=video`;
+
+    try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("Failed to fetch YouTube video");
+        const data = await res.json();
+        return data.items[0] || null;
+    } catch (err) {
+        console.error("YouTube API error:", err);
+        return null;
+    }
 }
