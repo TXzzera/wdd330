@@ -1,8 +1,3 @@
-// main.js
-const path = window.location.pathname.toLowerCase();
-console.log("main.js loaded!");
-
-// Function to load partials relative to the current file
 async function loadPartial(id, url) {
   try {
     const response = await fetch(url);
@@ -14,13 +9,7 @@ async function loadPartial(id, url) {
   }
 }
 
-async function init() {
-  // ⚡ Use relative paths for GitHub Pages
-  await loadPartial('header-base', './partials/header.html');
-  await loadPartial('nav-base', './partials/nav.html');
-  await loadPartial('footer-base', './partials/footer.html');
-
-  // Load JS modules only if needed
+async function initModules(path) {
   try {
     // Homepage
     if (path.includes('index.html') || path === '/' || path.endsWith('/docs/')) {
@@ -47,6 +36,19 @@ async function init() {
   } catch (e) {
     console.error("Error loading module:", e);
   }
+}
+
+async function init() {
+  // Load partials first
+  await loadPartial('header-base', './partials/header.html');
+  await loadPartial('nav-base', './partials/nav.html');
+  await loadPartial('footer-base', './partials/footer.html');
+
+  // Define path after partials are in DOM
+  const path = window.location.pathname.toLowerCase();
+
+  // Load JS modules
+  await initModules(path);
 }
 
 // Wait for the DOM to be ready
