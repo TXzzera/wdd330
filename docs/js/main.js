@@ -1,3 +1,11 @@
+console.log("main.js loaded!");
+
+// Detect base path (root ou subpasta)
+const pathParts = location.pathname.split("/");
+const basePath = pathParts.length > 3 ? "../" : "./";
+const path = window.location.pathname.toLowerCase();
+
+// Load partials dynamically
 async function loadPartial(id, url) {
   try {
     const response = await fetch(url);
@@ -9,43 +17,44 @@ async function loadPartial(id, url) {
   }
 }
 
-async function initModules(path) {
+// Load page-specific JS modules
+async function initModules() {
   try {
     if (path.includes('index.html') || path === '/' || path.endsWith('/docs/')) {
       const rankingModule = await import('./ranking.js');
       rankingModule.loadTopTwenty();
     }
+
     if (path.includes('/playlists')) {
       await import('./playlist.js');
     }
+
     if (path.includes('/lyrics')) {
       const lyricsModule = await import('./lyrics.js');
       lyricsModule.initLyricsPage();
     }
+
     if (path.includes('/account')) {
       await import('./account.js');
     }
+
+    try {
+      await import('./search.js');
+    } catch (e) {
+      console.warn("Search module not loaded:", e);
+    }
+
   } catch (e) {
-    console.error("Error loading module:", e);
+    console.error("Error loading modules:", e);
   }
 }
 
+// Main init
 async function init() {
-  // Compute base path depending on the page location
-  const pathParts = window.location.pathname.split('/');
-  const basePath = pathParts.length > 3 
-    ? '../'  // subfolder like /lyrics/, /account/, /playlists/
-    : './';   // root folder
-
-  // Load partials with correct relative paths
   await loadPartial('header-base', `${basePath}partials/header.html`);
   await loadPartial('nav-base', `${basePath}partials/nav.html`);
   await loadPartial('footer-base', `${basePath}partials/footer.html`);
-
-  // Path for modules
-  const path = window.location.pathname.toLowerCase();
-  await initModules(path);
+  await initModules();
 }
 
-// Run after DOM is ready
 document.addEventListener('DOMContentLoaded', init);
