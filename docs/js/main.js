@@ -1,60 +1,64 @@
+// main.js
 console.log("main.js loaded!");
 
-// Detect base path (root ou subpasta)
-const pathParts = location.pathname.split("/");
-const basePath = pathParts.length > 3 ? "../" : "./";
-const path = window.location.pathname.toLowerCase();
-
-// Load partials dynamically
-async function loadPartial(id, url) {
-  try {
-    const response = await fetch(url);
-    if (!response.ok) throw new Error(`Failed to load ${url}`);
-    const html = await response.text();
-    document.getElementById(id).innerHTML = html;
-  } catch (err) {
-    console.error(err);
-  }
+// Detect the current base path relative to docs folder
+function getBasePath() {
+    const pathParts = window.location.pathname.split("/");
+    const depth = pathParts.includes("docs") ? pathParts.length - pathParts.indexOf("docs") - 2 : 0;
+    return "../".repeat(depth);
 }
 
-// Load page-specific JS modules
-async function initModules() {
-  try {
-    if (path.includes('index.html') || path === '/' || path.endsWith('/docs/')) {
-      const rankingModule = await import('./ranking.js');
-      rankingModule.loadTopTwenty();
+// Load partial HTML and replace {basePath}
+async function loadPartial(id, url) {
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Failed to load ${url}`);
+        let html = await response.text();
+        const basePath = getBasePath();
+        html = html.replace(/{basePath}/g, basePath);
+        document.getElementById(id).innerHTML = html;
+    } catch (err) {
+        console.error(err);
     }
+}
 
-    if (path.includes('/playlists')) {
-      await import('./playlist.js');
-    }
+// Initialize page
+async function init() {
+    // Load partials
+    await loadPartial('header-base', `${getBasePath()}partials/header.html`);
+    await loadPartial('nav-base', `${getBasePath()}partials/nav.html`);
+    await loadPartial('footer-base', `${getBasePath()}partials/footer.html`);
 
-    if (path.includes('/lyrics')) {
-      const lyricsModule = await import('./lyrics.js');
-      lyricsModule.initLyricsPage();
-    }
-
-    if (path.includes('/account')) {
-      await import('./account.js');
-    }
+    // Determine which page is loaded
+    const path = window.location.pathname.toLowerCase();
 
     try {
-      await import('./search.js');
-    } catch (e) {
-      console.warn("Search module not loaded:", e);
+        // Homepage
+        if (path.endsWith("index.html") && path.includes("/docs/index.html")) {
+            const rankingModule = await import(`${getBasePath()}js/ranking.js`);
+            rankingModule.loadTopTwenty();
+        }
+
+        // Playlists page
+        if (path.includes("/playlists/")) {
+            await import(`${getBasePath()}js/playlist.js`);
+        }
+
+        // Lyrics page
+        if (path.includes("/lyrics/")) {
+            const lyricsModule = await import(`${getBasePath()}js/lyrics.js`);
+            lyricsModule.initLyricsPage();
+        }
+
+        // Account pages
+        if (path.includes("/account/")) {
+            await import(`${getBasePath()}js/account.js`);
+        }
+
+    } catch (err) {
+        console.error("Error loading module:", err);
     }
-
-  } catch (e) {
-    console.error("Error loading modules:", e);
-  }
 }
 
-// Main init
-async function init() {
-  await loadPartial('header-base', `${basePath}partials/header.html`);
-  await loadPartial('nav-base', `${basePath}partials/nav.html`);
-  await loadPartial('footer-base', `${basePath}partials/footer.html`);
-  await initModules();
-}
-
-document.addEventListener('DOMContentLoaded', init);
+// Run after DOM loaded
+document.addEventListener("DOMContentLoaded", init);
