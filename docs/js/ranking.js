@@ -1,48 +1,51 @@
 import { getTopTracks } from './api/lastfmApi.js';
-import { spotifyApiFetch } from './api/spotifyApi.js';
 
-const musicGrid = document.getElementById("music-grid");
-const seeMoreBtn = document.querySelector(".see-more-btn");
+function createMusicCards(tracks, container) {
+  container.innerHTML = "";
 
-async function loadRanking(limit = 20) {
-  try {
-    const tracks = await getTopTracks(limit);
+  tracks.forEach(track => {
+    const artistName = track.artist?.name || "Unknown Artist";
+    const albumImage = track.image?.[2]?.["#text"] || 'images/default-album.png';
 
-    musicGrid.innerHTML = "";
+    const musicCard = document.createElement("div");
+    musicCard.classList.add("music-card");
+    musicCard.innerHTML = `
+      <img src="${albumImage}" alt="Album cover" />
+      <h3>${track.name}</h3>
+      <p>${artistName}</p>
+      <button class="listen-btn">Listen</button>
+    `;
 
-    for (const track of tracks) {
-      const q = `${track.name} ${track.artist.name}`;
-      let spotifyData;
-      try {
-        const res = await spotifyApiFetch(`search?q=${encodeURIComponent(q)}&type=track&limit=1`);
-        spotifyData = res.tracks.items[0];
-      } catch {
-        spotifyData = null;
-      }
+    // Adiciona o evento ao botão
+    const button = musicCard.querySelector(".listen-btn");
+    button.addEventListener("click", () => {
+      // Redireciona para lyrics/index.html passando artista e música como query string
+      const url = `lyrics/index.html?artist=${encodeURIComponent(artistName)}&song=${encodeURIComponent(track.name)}`;
+      window.location.href = url;
+    });
 
-      const musicCard = document.createElement("div");
-      musicCard.classList.add("music-card");
-
-      musicCard.innerHTML = `
-        <img src="${spotifyData?.album?.images[0]?.url || 'images/default-album.png'}" alt="Album cover" />
-        <h3>${track.name}</h3>
-        <p>${track.artist.name}</p>
-        <button class="btn listen-btn" data-track-id="${spotifyData?.id || ''}">Listen</button>
-      `;
-
-      musicGrid.appendChild(musicCard);
-    }
-
-  } catch (err) {
-    musicGrid.innerHTML = "<p>Failed to load ranking. Try again later.</p>";
-    console.error(err);
-  }
+    container.appendChild(musicCard);
+  });
 }
 
-seeMoreBtn?.addEventListener("click", () => {
-  alert("See more not implemented yet.");
-});
+export async function loadTopTwenty() {
+  const musicGrid = document.getElementById("music-grid");
+  if (!musicGrid) {
+    console.error("music-grid element not found in DOM");
+    return;
+  }
 
-document.addEventListener("DOMContentLoaded", () => {
-  loadRanking();
-});
+  console.log("Loading top tracks...");
+
+  try {
+    const tracks = await getTopTracks(20);
+    if (!tracks.length) {
+      musicGrid.innerHTML = "<p>No tracks found.</p>";
+      return;
+    }
+    createMusicCards(tracks, musicGrid);
+  } catch (err) {
+    musicGrid.innerHTML = "<p>Failed to load ranking. Try again later.</p>";
+    console.error("Error fetching top tracks:", err);
+  }
+}

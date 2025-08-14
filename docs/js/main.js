@@ -1,5 +1,4 @@
 const path = window.location.pathname.toLowerCase();
-console.log("main.js foi carregado!");
 
 async function loadPartial(id, url) {
   const response = await fetch(url);
@@ -11,39 +10,43 @@ async function loadPartial(id, url) {
   }
 }
 
-async function loadModule(modulePath) {
-  try {
-    await import(modulePath);
-  } catch (e) {
-    console.error(`Error loading module ${modulePath}`, e);
-  }
-}
-
 async function init() {
-  // Primeiro carrega os partials
+  // Load header, nav, footer
   await loadPartial('header-base', '/docs/partials/header.html');
   await loadPartial('nav-base', '/docs/partials/nav.html');
   await loadPartial('footer-base', '/docs/partials/footer.html');
 
-  // Só depois importa os módulos que usam esses partials
-  await loadModule('./search.js');
-
-  if (path === '/' || path.endsWith('/index.html') || path.endsWith('/docs/') || path.endsWith('/docs/index.html')) {
-    await loadModule('./ranking.js');
+  // Load search module
+  try {
+    await import('./search.js');
+  } catch (e) {
+    console.error("Error loading search.js", e);
   }
 
+  // Load homepage modules
+  if (path.includes('index.html') || path === '/' || path.endsWith('/docs/')) {
+    try {
+      const rankingModule = await import('./ranking.js');
+      rankingModule.loadTopTwenty();
+    } catch (e) {
+      console.error("Error loading ranking.js", e);
+    }
+  }
+
+  // Load other page modules
   if (path.includes('/playlists')) {
-    await loadModule('./playlists.js');
+    await import('./playlist.js').catch(e => console.error(e));
   }
 
-  if (path.includes('/lyrics')) {
-    await loadModule('./lyrics.js');
-  }
+ if (path.includes('/lyrics')) {
+  const lyricsModule = await import('./lyrics.js');
+  lyricsModule.initLyricsPage(); 
+}
+
 
   if (path.includes('/account')) {
-    await loadModule('./account.js');
+    await import('./account.js').catch(e => console.error(e));
   }
 }
 
-// Espera o DOM estar pronto, aí chama init()
 document.addEventListener('DOMContentLoaded', init);

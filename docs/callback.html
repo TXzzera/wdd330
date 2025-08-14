@@ -3,29 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SongBanger | Callback</title>
+  <title>SongBanger | Genius Callback</title>
   <link rel="stylesheet" href="css/style.css" />
-  <link rel="icon" type="image/svg" href="images/icon_songbanger.svg">
-  <script type="module" src="./js/main.js" defer></script>
-
 </head>
 <body>
   <main>
-    <h1>Processing authentication...</h1>
+    <h1>Processing Genius authentication...</h1>
   </main>
 
   <script type="module">
-
     const hash = window.location.hash.substring(1);
     const params = new URLSearchParams(hash);
     const accessToken = params.get("access_token");
 
     if (accessToken) {
-      localStorage.setItem("spotify_access_token", accessToken);
-      window.location.href = "/docs/index.html";
-    } else {
-      window.location.href = "/docs/index.html";
+      localStorage.setItem("genius_access_token", accessToken);
     }
+
+    window.location.href = "/docs/index.html";
   </script>
 </body>
 </html>
+

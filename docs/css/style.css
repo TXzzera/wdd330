@@ -79,6 +79,7 @@ header {
     flex-grow: 1;
     max-width: 500px;
     margin: 0 auto;
+    position: relative; /* necessário para posicionar o dropdown abaixo */
 }
 
 .search-bar input {
@@ -93,6 +94,41 @@ header {
 .search-bar button {
     font-size: 16px;
 }
+
+/* Dropdown de sugestões */
+.search-dropdown {
+    position: absolute;
+    top: 100%; /* logo abaixo do input */
+    left: 0;
+    width: 100%; /* mesma largura do input */
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: #111;
+    border: 1px solid var(--primary-color);
+    border-radius: 4px;
+    display: none;
+    z-index: 1000;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+.search-dropdown .dropdown-header {
+    font-weight: bold;
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--primary-color);
+    color: var(--primary-color);
+}
+
+.search-dropdown .suggestion-item {
+    padding: 6px 12px;
+    cursor: pointer;
+    color: var(--neutral-color);
+}
+
+.search-dropdown .suggestion-item:hover {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+}
+
 
 /* Content wrapper: nav + main */
 .content-wrapper {
@@ -126,8 +162,12 @@ main {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding-left: 24px;
+  align-items: flex-start; /* Alinha conteúdo à esquerda */
+  padding-left: 240px;
+}
+main h1 {
+    margin-bottom: 20px;
+    text-align: center;
 }
 
 /* User page */
@@ -190,17 +230,18 @@ section {
     padding: 20px;
 }
 
-.music-grid, .playlist-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 16px;
+.music-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alinha o container à esquerda */
     width: 100%;
 }
 
-.music-container, .play-like-container, .play-last-container, .play-feat-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.music-grid, .playlist-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Três cards por linha */
+    gap: 16px;
+    width: 100%;
 }
 
 .music-grid div, .playlist-grid div {
@@ -253,6 +294,12 @@ section {
 }
 
 /* Responsive */
+@media (max-width: 1024px) {
+    .music-grid, .playlist-grid {
+        grid-template-columns: repeat(2, 1fr); /* Duas colunas em telas médias */
+    }
+}
+
 @media (max-width: 768px) {
 
     .content-wrapper {
@@ -268,10 +315,11 @@ section {
 
     main {
         padding-left: 0;
+        align-items: center; /* Centraliza no mobile */
     }
 
     .music-grid, .playlist-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; /* Uma coluna no mobile */
     }
 
     .user-page {

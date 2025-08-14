@@ -2,43 +2,50 @@
 <html lang="en-US">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=], initial-scale=1.0">
-    <title>SongBanger | Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SongBanger | Lyrics</title>
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="icon" type="image/svg" href="images/icon_songbanger.svg">
+    <link rel="icon" type="image/svg" href="../images/icon_songbanger.svg">
     <script type="module" src="../js/main.js" defer></script>
-
 </head>
 <body>
+    <!-- Header -->
     <header class="divider" id="header-base"></header>
 
+    <!-- Content wrapper: nav + main -->
     <div class="content-wrapper">
+        <!-- Sidebar navigation -->
         <nav class="divider" id="nav-base"></nav>
 
-      <main>
-        <section class="lyrics-info">
-            <h1 class="song"></h1>
-            <h2 class="artist"></h2>
-            <div class="letter-options">
-              <button class="btn" id="show-lyrics">Lyrics</button>
-              <button class="btn" id="show-translations">Translation</button>
-            </div>
-        </section>
+        <!-- Main content -->
+        <main>
+            <!-- Lyrics Info -->
+            <section class="lyrics-info">
+                <h1 class="song">Loading...</h1>
+                <h2 class="artist">Loading...</h2>
+                <div class="letter-options">
+                    <button class="btn" id="show-lyrics">Lyrics</button>
+                    <button class="btn" id="show-translations">Translation</button>
+                </div>
+            </section>
 
-        <section class="lyrics-media">
-            <div class="video-container"></div>
-        </section>
+            <!-- Video Section -->
+            <section class="lyrics-media">
+                <div class="video-container">
+                    <p>Loading video...</p>
+                </div>
+            </section>
 
-        <section class="credits">
-            <h3>Credits</h3>
-            <p>Lyrics provided by <a href="https://genius.com/" target="_blank" rel="noopener noreferrer">Genius</a>.</p>
-            <p>Video provided by <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">YouTube</a>.</p>
-        </section>
-      </main>
+            <!-- Credits -->
+            <section class="credits">
+                <h3>Credits</h3>
+                <p>Lyrics provided by <a href="https://genius.com/" target="_blank" rel="noopener noreferrer">Genius</a>.</p>
+                <p>Video provided by <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">YouTube</a>.</p>
+            </section>
+        </main>
     </div>
 
-    
-
+    <!-- Footer -->
     <footer class="divider" id="footer-base"></footer>
 </body>
 </html>
